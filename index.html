@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vaatwassers vergelijken</title>
+<style>
+:root{
+  --bg:#f1f4f6; --card:#ffffff; --ink:#15222b; --muted:#5d6c76; --line:#dde3e8;
+  --brand:#1b4fd8; --brand-d:#143bab; --brand-soft:#e6edfd;
+  --good:#1c7a52; --good-soft:#e2f3ea; --mid:#1f7f8e; --mid-soft:#e0f1f3; --warn:#a8650b; --warn-soft:#fbeed6;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Inter","Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.top{background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.top-in{max-width:1080px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px;letter-spacing:-.01em}
+.logo i{width:30px;height:30px;border-radius:9px;background:var(--brand);display:grid;place-items:center}
+.logo i:before{content:"";width:14px;height:14px;border:3px solid #fff;border-radius:50%;border-top-color:transparent;transform:rotate(30deg)}
+.search{flex:1;max-width:380px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:8px 16px;color:var(--muted);font-size:14px}
+.top-r{margin-left:auto;display:flex;align-items:center;gap:14px}
+.chip-z{display:inline-flex;gap:6px;align-items:center;background:var(--good-soft);color:var(--good);font-weight:600;font-size:13px;padding:6px 12px;border-radius:999px;animation:pop .35s ease-out}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:none;opacity:1}}
+.cart{position:relative;padding:6px 10px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:14px}
+.cart b{background:var(--brand);color:#fff;border-radius:999px;padding:0 7px;margin-left:6px;font-size:12px}
+main{max-width:1080px;margin:0 auto;padding:24px 20px 64px}
+.crumb{color:var(--muted);font-size:13px;margin-bottom:6px}
+h1{font-size:28px;line-height:1.2;letter-spacing:-.02em;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 20px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.f{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--muted)}
+.f.on{border-color:var(--brand);color:var(--brand);background:var(--brand-soft);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}
+.card .pic{background:linear-gradient(180deg,#eef2f5,#e3e9ee);padding:18px 0 8px;display:grid;place-items:center;height:210px}
+.card .body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:10px;flex:1}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.name{font-weight:700;font-size:17px}
+.price{font-weight:700;font-size:18px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:var(--bg);border-radius:8px;padding:3px 9px;font-size:12.5px;color:var(--muted)}
+.btn{border:0;border-radius:10px;padding:11px 16px;font-weight:600;background:var(--brand);color:#fff}
+.btn:hover{background:var(--brand-d)}
+.btn.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.btn.ghost:hover{background:var(--brand-soft)}
+.btn.wide{width:100%}
+.card .btn{margin-top:auto}
+/* score badge */
+.mes{display:flex;gap:12px;align-items:center;border-radius:12px;padding:10px 12px;border:1px solid}
+.mes .t{display:flex;flex-direction:column;line-height:1.25}
+.mes .t small{font-size:12px;color:var(--muted)}
+.mes .t b{font-size:15px}
+.mes .t span{font-size:12.5px;color:var(--ink)}
+.lv-good{background:var(--good-soft);border-color:#bfe3cf}.lv-good b{color:var(--good)}
+.lv-mid{background:var(--mid-soft);border-color:#bddde2}.lv-mid b{color:var(--mid)}
+.lv-warn{background:var(--warn-soft);border-color:#efd5a5}.lv-warn b{color:var(--warn)}
+.mes.big{padding:14px 16px}.mes.big .t b{font-size:18px}
+button.mes{width:100%;text-align:left;font:inherit;color:inherit}
+button.mes:hover{filter:brightness(.98)}
+/* product page */
+.pp{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+.pp .pic{background:linear-gradient(180deg,#eef2f5,#e3e9ee);border-radius:var(--r);padding:30px 0 14px;display:grid;place-items:center}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:22px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.back{background:none;border:0;color:var(--brand);padding:0;margin-bottom:14px;font-weight:600}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:18px 0 14px}
+.tab{background:none;border:0;padding:9px 14px;color:var(--muted);font-weight:600;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab.on{color:var(--ink);border-color:var(--brand)}
+table.sp{width:100%;border-collapse:collapse}
+table.sp td{padding:9px 0;border-bottom:1px solid var(--line)}
+table.sp td:last-child{text-align:right;font-weight:600}
+.norm{display:flex;gap:10px;align-items:center;color:var(--ink);font-size:14px}
+.norm svg{flex:none}
+.steps{display:flex;flex-direction:column;gap:10px;margin:0 0 16px;padding:0;list-style:none}
+.steps li{display:flex;gap:12px;align-items:flex-start;background:var(--bg);border-radius:10px;padding:10px 12px}
+.steps .n{flex:none;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700}
+.steps small{color:var(--muted);display:block}
+.act{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.act .btn{padding:7px 12px;font-size:14px}
+.act.done{background:var(--good-soft);border-color:#bfe3cf}
+.act.done .btn{background:none;color:var(--good);cursor:default}
+.cta{display:flex;gap:10px;margin-top:18px}
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-weight:500;box-shadow:0 8px 28px rgba(0,0,0,.25);animation:up .3s ease-out;max-width:90vw;z-index:20}
+@keyframes up{from{transform:translate(-50%,16px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+/* full screens */
+.center{max-width:600px;margin:40px auto}
+.center h1{margin-bottom:10px}
+.scn{background:var(--brand-soft);border-radius:12px;padding:14px 16px;margin:16px 0;font-weight:500}
+.q{margin:20px 0}.q p{margin:0 0 8px;font-weight:600}
+.scale{display:flex;gap:6px;flex-wrap:wrap}
+.scale label{flex:1;min-width:44px}
+.scale input{position:absolute;opacity:0}
+.scale span{display:grid;place-items:center;height:42px;border:1.5px solid var(--line);border-radius:10px;background:#fff;font-weight:600}
+.scale input:checked+span{background:var(--brand);border-color:var(--brand);color:#fff}
+.scale input:focus-visible+span{outline:3px solid var(--brand);outline-offset:2px}
+.ends{display:flex;justify-content:space-between;color:var(--muted);font-size:12.5px;margin-top:4px}
+.opt{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;margin-bottom:8px}
+.opt input{accent-color:var(--brand)}
+.opt:has(input:checked){border-color:var(--brand);background:var(--brand-soft)}
+.muted{color:var(--muted)}
+.note{font-size:13px;color:var(--muted)}
+.dbg{position:fixed;right:8px;bottom:8px;background:#000;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;opacity:.7}
+@media (max-width:820px){.grid{grid-template-columns:1fr 1fr}.pp{grid-template-columns:1fr}.search{display:none}}
+@media (max-width:560px){.grid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ===== Instellingen ===== */
+const CONFIG = {
+  studyId: 'mes-ronde1',
+  endpoint: '',            // plak hier de URL van je Google Apps Script web-app (zie LEESMIJ)
+  arms: ['C','Z']          // ['C','A','Z'] voor drie armen
+};
+/* C = controle, A = score met uitleg, Z = score + norm + identiteit (zorgzame eigenaar) */
+
+const params = new URLSearchParams(location.search);
+let arm = params.get('arm');
+if(!['C','A','Z'].includes(arm)) arm = CONFIG.arms[Math.floor(Math.random()*CONFIG.arms.length)];
+const debug = params.has('debug');
+const pid = 'p' + Math.random().toString(36).slice(2,9);
+const T0 = Date.now(), events = [];
+
+function log(type, data){
+  const e = Object.assign({study:CONFIG.studyId, pid, arm, type, t:+((Date.now()-T0)/1000).toFixed(1)}, data||{});
+  events.push(e);
+  try{ localStorage.setItem('mes_'+pid, JSON.stringify(events)); }catch(_){}
+  if(CONFIG.endpoint){ try{ fetch(CONFIG.endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(e)}); }catch(_){} }
+}
+
+/* ===== Stimuli (fictief) ===== */
+const MODELS = [
+  {id:'A',price:649,mes:8.6,min:5, cap:14,db:44,lab:'C',prog:6,tone:0},
+  {id:'B',price:699,mes:4.8,min:20,cap:13,db:46,lab:'B',prog:5,tone:1},
+  {id:'C',price:749,mes:7.1,min:10,cap:15,db:42,lab:'C',prog:8,tone:2},
+  {id:'D',price:799,mes:5.9,min:15,cap:14,db:48,lab:'B',prog:7,tone:0},
+  {id:'E',price:849,mes:9.0,min:4, cap:13,db:42,lab:'D',prog:6,tone:1},
+  {id:'F',price:899,mes:6.3,min:12,cap:15,db:44,lab:'C',prog:5,tone:2}
+];
+const order = MODELS.map(m=>m.id).sort(()=>Math.random()-.5);
+const fmt = n => n.toFixed(1).replace('.',',');
+const eur = n => '€ ' + n;
+const level = s => s>=8?['Zeer makkelijk','good','#1c7a52']:s>=6?['Makkelijk','mid','#1f7f8e']:s>=4?['Gemiddeld','warn','#a8650b']:['Bewerkelijk','warn','#a8650b'];
+const hasScore = () => arm==='A' || arm==='Z';
+
+/* ===== Illustraties ===== */
+function dishwasher(m, w){
+  const tones=[['#f4f6f8','#d9e0e6'],['#e9edf0','#c5cfd7'],['#dfe4e8','#b9c4cd']][m.tone];
+  const k = 'g'+m.id+w;
+  return `<svg width="${w}" height="${Math.round(w*1.1)}" viewBox="0 0 200 220" role="img" aria-label="Model ${m.id}">
+  <defs><linearGradient id="${k}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${tones[0]}"/><stop offset="1" stop-color="${tones[1]}"/></linearGradient></defs>
+  <ellipse cx="100" cy="212" rx="78" ry="6" fill="#000" opacity=".08"/>
+  <rect x="22" y="12" width="156" height="192" rx="12" fill="url(#${k})" stroke="#aab6c0" stroke-width="1.5"/>
+  <rect x="30" y="20" width="140" height="26" rx="6" fill="#2a3945"/>
+  <rect x="38" y="28" width="34" height="10" rx="3" fill="#7fd1c0" opacity=".9"/>
+  <circle cx="132" cy="33" r="5" fill="#cfd8df"/><circle cx="148" cy="33" r="5" fill="#cfd8df"/><circle cx="116" cy="33" r="5" fill="#cfd8df"/>
+  <rect x="30" y="54" width="140" height="140" rx="8" fill="none" stroke="#aab6c0" stroke-width="1.2"/>
+  <rect x="48" y="66" width="104" height="9" rx="4.5" fill="#8d9ba6"/>
+  <rect x="58" y="176" width="84" height="6" rx="3" fill="#b4c0c9"/>
+  <rect x="34" y="204" width="14" height="5" rx="2" fill="#8d9ba6"/><rect x="152" y="204" width="14" height="5" rx="2" fill="#8d9ba6"/>
+  </svg>`;
+}
+function gauge(s,size){
+  const lv=level(s), r=20, c=2*Math.PI*r;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="${r}" fill="none" stroke="#fff" stroke-opacity=".9" stroke-width="5"/><circle cx="26" cy="26" r="${r}" fill="none" stroke="${lv[2]}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${(c*s/10).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 26 26)"/><text x="26" y="31" text-anchor="middle" font-size="14" font-weight="700" fill="#15222b">${fmt(s)}</text></svg>`;
+}
+function badge(m, big, asButton){
+  const lv=level(m.mes), size = big?60:50;
+  const inner = `${gauge(m.mes,size)}<div class="t"><small>Onderhoudsgemak</small><b>${lv[0]}</b><span>± ${m.min} min per maand</span></div>`;
+  return asButton
+    ? `<button class="mes lv-${lv[1]} ${big?'big':''}" data-a="badge" aria-label="Onderhoudsgemak ${fmt(m.mes)} van 10, ${lv[0]}. Bekijk onderhoud.">${inner}</button>`
+    : `<div class="mes lv-${lv[1]} ${big?'big':''}">${inner}</div>`;
+}
+
+/* ===== State ===== */
+const S = {screen:'intro', model:null, tab:'spec', saved:false, set:false, reminder:false, chip:false, toast:'', tabStart:null, ans:{}};
+const $app = document.getElementById('app');
+const M = id => MODELS.find(m=>m.id===id);
+
+function header(){
+  return `<header class="top"><div class="top-in"><div class="logo"><i></i>Vaatwassers</div><div class="search">Zoek een model of kenmerk</div>
+  <div class="top-r">${S.chip?'<span class="chip-z">✓ Zorgzame eigenaar</span>':''}<span class="cart">Winkelmand<b>${S.set?1:0}</b></span></div></div></header>`;
+}
+
+/* ===== Schermen ===== */
+function intro(){
+  return `<header class="top"><div class="top-in"><div class="logo"><i></i>Onderzoek</div></div></header>
+  <main><div class="center"><h1>Een nieuwe vaatwasser kiezen</h1>
+  <p class="muted">We onderzoeken hoe mensen online apparaten vergelijken. Je bekijkt een fictieve webshop; er wordt niets gekocht. Dit duurt ongeveer 5 minuten.</p>
+  <div class="scn">Je moet een nieuwe vaatwasser kopen (60 cm, budget tot € 900). Bekijk de modellen en kies degene die je zou kopen.</div>
+  <p class="note">We leggen je klikgedrag anoniem vast. Je kunt op elk moment stoppen door dit venster te sluiten.</p>
+  <button class="btn" data-a="start">Start</button></div></main>`;
+}
+
+function listing(){
+  const cards = order.map(id=>{const m=M(id);
+    return `<article class="card"><div class="pic">${dishwasher(m,150)}</div><div class="body">
+      <div class="row"><span class="name">Model ${m.id}</span><span class="price">${eur(m.price)}</span></div>
+      <div class="chips"><span class="chip">${m.cap} couverts</span><span class="chip">${m.db} dB</span><span class="chip">Label ${m.lab}</span></div>
+      ${hasScore()?badge(m,false,true).replace('data-a="badge"',`data-a="badge" data-m="${m.id}"`):''}
+      <button class="btn ghost" data-a="open" data-m="${m.id}">Bekijk model</button></div></article>`}).join('');
+  return `${header()}<main><div class="crumb">Huishoudelijke apparaten › Vaatwashers</div><h1>Vaatwassers 60 cm</h1><p class="sub">6 modellen</p>
+  <div class="filters"><span class="f on">60 cm</span><span class="f">Tot € 900</span><span class="f">Vrijstaand</span><span class="f">Energielabel</span><span class="f">Geluid</span></div>
+  <div class="grid">${cards}</div></main>`;
+}
+
+function product(){
+  const m=M(S.model), lv=level(m.mes);
+  const spec = `<table class="sp"><tr><td>Capaciteit</td><td>${m.cap} couverts</td></tr><tr><td>Geluidsniveau</td><td>${m.db} dB</td></tr><tr><td>Energielabel</td><td>${m.lab}</td></tr><tr><td>Programma's</td><td>${m.prog}</td></tr><tr><td>Breedte</td><td>60 cm</td></tr></table>`;
+  const done = (v,txt,doneTxt,a)=>`<div class="act ${v?'done':''}"><span>${txt}</span><button class="btn ${v?'':'ghost'}" ${v?'disabled':`data-a="${a}"`}>${v?doneTxt:'Kies'}</button></div>`;
+  const onder = `<ol class="steps"><li><span class="n">1</span><div><b>Filter reinigen</b><small>Maandelijks, onder stromend water</small></div></li>
+    <li><span class="n">2</span><div><b>Sproeiarmen controleren</b><small>Elk kwartaal, gaatjes vrijmaken</small></div></li>
+    <li><span class="n">3</span><div><b>Reinigingsprogramma draaien</b><small>Elk half jaar, zonder vaat</small></div></li></ol>
+    <div class="act ${S.saved?'done':''}"><span>Onderhoudskaart voor na aankoop</span><button class="btn ${S.saved?'':'ghost'}" ${S.saved?'disabled':'data-a="save" data-src="tab"'}>${S.saved?'Bewaard':'Bewaar kaart'}</button></div>
+    <div class="act ${S.set?'done':''}"><span>Onderhoudsset (€ 12)</span><button class="btn ${S.set?'':'ghost'}" ${S.set?'disabled':'data-a="set"'}>${S.set?'In winkelmand':'Voeg toe'}</button></div>
+    <div class="act ${S.reminder?'done':''}"><span>Herinnering na aankoop</span><button class="btn ${S.reminder?'':'ghost'}" ${S.reminder?'disabled':'data-a="rem"'}>${S.reminder?'Aan':'Zet aan'}</button></div>`;
+  let extra='';
+  if(hasScore()) extra += badge(m,true,true);
+  if(arm==='Z'){
+    extra += `<div class="norm"><svg width="34" height="22" viewBox="0 0 34 22" aria-hidden="true"><circle cx="9" cy="7" r="4.5" fill="#1b4fd8"/><circle cx="25" cy="7" r="4.5" fill="#1b4fd8"/><path d="M1 21c0-5 3.6-8 8-8s8 3 8 8zM17 21c0-5 3.6-8 8-8s8 3 8 8z" fill="#1b4fd8" opacity=".85"/></svg><span><b>6 van de 10 kopers</b> van dit model bewaart de onderhoudskaart.</span></div>
+    ${S.chip?`<div class="act done"><span>Je bent een zorgzame eigenaar. Je kaart staat klaar voor na je aankoop.</span></div>`:`<button class="btn ghost wide" data-a="save" data-src="identity">Bewaar kaart en word zorgzame eigenaar</button>`}`;
+  }
+  return `${header()}<main><button class="back" data-a="back">‹ Terug naar overzicht</button>
+  <div class="pp"><div class="pic">${dishwasher(m,260)}</div>
+  <div class="stack"><div class="panel stack"><div class="row"><h1 style="margin:0">Model ${m.id}</h1><span class="price" style="font-size:24px">${eur(m.price)}</span></div>
+  <div class="chips"><span class="chip">${m.cap} couverts</span><span class="chip">${m.db} dB</span><span class="chip">Label ${m.lab}</span></div>
+  ${extra}
+  <div class="tabs" role="tablist"><button class="tab ${S.tab==='spec'?'on':''}" role="tab" data-a="tab" data-t="spec">Specificaties</button><button class="tab ${S.tab==='onder'?'on':''}" role="tab" data-a="tab" data-t="onder">Onderhoud</button></div>
+  <div>${S.tab==='spec'?spec:onder}</div>
+  <div class="cta"><button class="btn wide" data-a="choose">Kies dit model</button></div></div></div></div></main>${S.toast?`<div class="toast" role="status">${S.toast}</div>`:''}`;
+}
+
+function scale(name,label,lo,hi){
+  return `<div class="q"><p>${label}</p><div class="scale">${[1,2,3,4,5,6,7].map(i=>`<label><input type="radio" name="${name}" value="${i}"><span>${i}</span></label>`).join('')}</div><div class="ends"><span>${lo}</span><span>${hi}</span></div></div>`;
+}
+function quest(){
+  const m=M(S.model);
+  return `<header class="top"><div class="top-in"><div class="logo"><i></i>Onderzoek</div></div></header><main><div class="center">
+  <h1>Je koos Model ${m.id}</h1><p class="muted">Nog vier korte vragen.</p>
+  <form id="qf">
+  <div class="q"><p>Welke informatie over onderhoud zag je tijdens het kiezen?</p>
+    <label class="opt"><input type="radio" name="saw" value="score"> Een score voor onderhoudsgemak</label>
+    <label class="opt"><input type="radio" name="saw" value="info"> Alleen algemene onderhoudsinformatie</label>
+    <label class="opt"><input type="radio" name="saw" value="none"> Geen onderhoudsinformatie</label></div>
+  ${scale('effort','Hoeveel moeite denk je dat het onderhoud van jouw gekozen model kost?','Heel weinig','Heel veel')}
+  ${scale('need','Hoe nodig is regelmatig onderhoud van een vaatwasser?','Niet nodig','Heel nodig')}
+  ${arm==='Z'?scale('pressure','Hoeveel druk voelde je om onderhoud te plannen?','Geen druk','Veel druk'):''}
+  <div class="q"><p>Wat denk je dat het doel van dit onderzoek was?</p><textarea name="goal" rows="2" style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px;font:inherit"></textarea></div>
+  <button class="btn" type="submit">Verstuur</button></form></div></main>`;
+}
+function done(){
+  return `<header class="top"><div class="top-in"><div class="logo"><i></i>Onderzoek</div></div></header><main><div class="center">
+  <h1>Bedankt voor je deelname</h1>
+  <p>Het doel was onderzoeken of informatie over onderhoud de oriëntatie op een nieuwe vaatwasser verandert. De webshop, de modellen, de onderhoudsscores en het percentage kopers waren fictief; er is niets verkocht.</p>
+  <p class="muted">Je antwoorden zijn anoniem. Je mag nu het venster sluiten.</p>
+  ${debug?`<p class="note">Testmodus: <a href="#" data-a="dl">log downloaden</a></p>`:''}</div></main>`;
+}
+
+function render(){
+  const html = ({intro,listing,product,quest,done})[S.screen]();
+  $app.innerHTML = html + (debug?`<div class="dbg">arm ${arm} · ${pid}</div>`:'');
+}
+
+/* ===== Gedrag ===== */
+function toast(t){ S.toast=t; render(); setTimeout(()=>{S.toast=''; if(S.screen==='product') render();},2600); }
+function leaveTab(){ if(S.tabStart){ log('onderhoud_tab_tijd',{model:S.model, sec:+((Date.now()-S.tabStart)/1000).toFixed(1)}); S.tabStart=null; } }
+
+document.addEventListener('click', e=>{
+  const el = e.target.closest('[data-a]'); if(!el) return;
+  const a = el.dataset.a;
+  if(a==='dl'){ e.preventDefault(); const b=new Blob([JSON.stringify(events,null,1)],{type:'application/json'}); const u=URL.createObjectURL(b); const x=document.createElement('a'); x.href=u; x.download=pid+'.json'; x.click(); return; }
+  if(a==='start'){ log('start'); S.screen='listing'; log('lijst_zichtbaar',{volgorde:order.join('')}); }
+  else if(a==='open'){ S.model=el.dataset.m; S.screen='product'; S.tab='spec'; log('open_model',{model:S.model,mes:M(S.model).mes}); }
+  else if(a==='badge'){ log('klik_score',{model:el.dataset.m||S.model}); if(S.screen==='listing'){ S.model=el.dataset.m; S.screen='product'; S.tab='onder'; S.tabStart=Date.now(); log('open_model',{model:S.model,mes:M(S.model).mes,via:'badge'}); } else { leaveTab(); S.tab='onder'; S.tabStart=Date.now(); log('tab_onderhoud',{model:S.model}); } }
+  else if(a==='back'){ leaveTab(); S.screen='listing'; log('terug_naar_lijst'); }
+  else if(a==='tab'){ const t=el.dataset.t; if(t!==S.tab){ leaveTab(); S.tab=t; if(t==='onder'){ S.tabStart=Date.now(); log('tab_onderhoud',{model:S.model}); } } }
+  else if(a==='save'){ S.saved=true; if(el.dataset.src==='identity'){ S.chip=true; toast('Goed bezig, zorgzame eigenaar. Je kaart staat klaar voor na je aankoop.'); } else { render(); } log('actie_kaart_bewaren',{model:S.model,via:el.dataset.src}); return; }
+  else if(a==='set'){ S.set=true; log('actie_set_toevoegen',{model:S.model}); }
+  else if(a==='rem'){ S.reminder=true; log('actie_herinnering',{model:S.model}); }
+  else if(a==='choose'){ leaveTab(); log('keuze',{model:S.model,mes:M(S.model).mes,prijs:M(S.model).price}); S.screen='quest'; }
+  render(); window.scrollTo(0,0);
+});
+document.addEventListener('submit', e=>{
+  if(e.target.id!=='qf') return; e.preventDefault();
+  const f=new FormData(e.target), o={}; f.forEach((v,k)=>o[k]=v);
+  log('vragenlijst',o); log('klaar',{acties:[S.saved&&'kaart',S.set&&'set',S.reminder&&'herinnering'].filter(Boolean).join('+')||'geen'});
+  S.screen='done'; render(); window.scrollTo(0,0);
+});
+render();
+</script>
+</body>
+</html>
