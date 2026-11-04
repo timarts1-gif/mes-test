@@ -132,10 +132,13 @@ const CONFIG = {
 const params = new URLSearchParams(location.search);
 let arm = params.get('arm');
 if(!['C','A','Z'].includes(arm)){
-  /* zonder ?arm= in de link: eenmalig willekeurig, daarna vast per browser (ook na verversen) */
+  /* zonder ?arm= in de link: eenmalig willekeurig, daarna vast per browser (ook na verversen).
+     ?arms=ZC kiest willekeurig tussen Z en C, ?arms=AZ tussen A en Z, enz. */
+  const pool = (params.get('arms')||'').toUpperCase().split('').filter((c,i,a)=>'CAZ'.includes(c)&&a.indexOf(c)===i);
+  const opts = pool.length>1 ? pool : CONFIG.arms;
   try{ arm = localStorage.getItem('mes_arm'); }catch(_){ arm = null; }
-  if(!CONFIG.arms.includes(arm)){
-    arm = CONFIG.arms[Math.floor(Math.random()*CONFIG.arms.length)];
+  if(!opts.includes(arm)){
+    arm = opts[Math.floor(Math.random()*opts.length)];
     try{ localStorage.setItem('mes_arm', arm); }catch(_){}
   }
 }
@@ -187,7 +190,7 @@ function header(){
   return `<header class="top"><div class="top-in"><div class="logo"><i></i>Vaatwassers</div><div class="search">Zoek een model of kenmerk</div>
   <div class="top-r"><span class="cart">Winkelmand<b>0</b></span></div></div></header>`;
 }
-const chips = m => `<div class="chips"><span class="chip">${m.cap} couverts</span><span class="chip">${m.db} dB</span><span class="chip">Label ${m.lab}</span>${hasLabel()?`<span class="chip">${m.label}</span>`:''}</div>`;
+const chips = (m, withLabel=true) => `<div class="chips"><span class="chip">${m.cap} couverts</span><span class="chip">${m.db} dB</span><span class="chip">Label ${m.lab}</span>${withLabel&&hasLabel()?`<span class="chip">${m.label}</span>`:''}</div>`;
 
 /* ===== Schermen ===== */
 function intro(){
@@ -212,12 +215,12 @@ function listing(){
 
 function product(){
   const m=M(S.model);
-  const spec = `<table class="sp"><tr><td>Capaciteit</td><td>${m.cap} couverts</td></tr><tr><td>Geluidsniveau</td><td>${m.db} dB</td></tr><tr><td>Energielabel</td><td>${m.lab}</td></tr><tr><td>Programma's</td><td>${m.prog}</td></tr><tr><td>Breedte</td><td>60 cm</td></tr></table>`;
+  const spec = `<table class="sp"><tr><td>Capaciteit</td><td>${m.cap} couverts</td></tr><tr><td>Geluidsniveau</td><td>${m.db} dB</td></tr><tr><td>Energielabel</td><td>${m.lab}</td></tr><tr><td>Programma's</td><td>${m.prog}</td></tr><tr><td>Breedte</td><td>60 cm</td></tr>${hasLabel()?`<tr><td>Onderhoud</td><td>${m.label}</td></tr>`:''}</table>`;
   const norm = arm==='A' ? `<div class="norm"><svg width="34" height="22" viewBox="0 0 34 22" aria-hidden="true"><circle cx="9" cy="7" r="4.5" fill="#5d6c76"/><circle cx="25" cy="7" r="4.5" fill="#5d6c76"/><path d="M1 21c0-5 3.6-8 8-8s8 3 8 8zM17 21c0-5 3.6-8 8-8s8 3 8 8z" fill="#5d6c76" opacity=".85"/></svg><span>6 van de 10 kopers van dit model doet het onderhoud volgens de handleiding.</span></div>` : '';
   return `${header()}<main><button class="back" data-a="back">‹ Terug naar overzicht</button>
   <div class="pp"><div class="pic">${dishwasher(m,260)}</div>
   <div class="stack"><div class="panel stack"><div class="row"><h1 style="margin:0">Model ${m.id}</h1><span class="price" style="font-size:24px">${eur(m.price)}</span></div>
-  ${chips(m)}${norm}
+  ${chips(m,false)}${norm}
   <div>${spec}</div>
   <div class="cta"><button class="btn wide" data-a="choose">Kies dit model</button></div></div></div></div></main>`;
 }
