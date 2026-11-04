@@ -34,7 +34,7 @@ h1{font-size:28px;line-height:1.2;letter-spacing:-.02em;margin:0 0 4px}
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
 .f{background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--muted)}
 .f.on{border-color:var(--brand);color:var(--brand);background:var(--brand-soft);font-weight:600}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column}
 .card .pic{background:linear-gradient(180deg,#eef2f5,#e3e9ee);padding:18px 0 8px;display:grid;place-items:center;height:210px}
 .card .body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:10px;flex:1}
@@ -104,7 +104,7 @@ table.sp td:last-child{text-align:right;font-weight:600}
 .muted{color:var(--muted)}
 .note{font-size:13px;color:var(--muted)}
 .dbg{position:fixed;right:8px;bottom:8px;background:#000;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;opacity:.7}
-@media (max-width:820px){.grid{grid-template-columns:1fr 1fr}.pp{grid-template-columns:1fr}.search{display:none}}
+@media (max-width:820px){.pp{grid-template-columns:1fr}.search{display:none}}
 @media (max-width:560px){.grid{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 
@@ -124,14 +124,21 @@ table.sp td:last-child{text-align:right;font-weight:600}
 /* ===== Instellingen ===== */
 const CONFIG = {
   studyId: 'mes-ronde2',
-  endpoint: 'https://script.google.com/macros/s/AKfycbxAjrqSXUSl2JyYk4K6M9M4_HynqyY6xDGHR8rdVB_itWGfKXY-5ZGSDvHosN2V4Yj7/exec',            // plak hier de URL van je Google Apps Script web-app
+  endpoint: '',            // plak hier de URL van je Google Apps Script web-app
   arms: ['A','Z']          // arm voor bezoekers zonder ?arm= in de link; C bestaat via ?arm=C
 };
 /* C = controle (geen label), Z = label per vaatwasser, A = label + sociale norm op de productpagina */
 
 const params = new URLSearchParams(location.search);
 let arm = params.get('arm');
-if(!['C','A','Z'].includes(arm)) arm = CONFIG.arms[Math.floor(Math.random()*CONFIG.arms.length)];
+if(!['C','A','Z'].includes(arm)){
+  /* zonder ?arm= in de link: eenmalig willekeurig, daarna vast per browser (ook na verversen) */
+  try{ arm = localStorage.getItem('mes_arm'); }catch(_){ arm = null; }
+  if(!CONFIG.arms.includes(arm)){
+    arm = CONFIG.arms[Math.floor(Math.random()*CONFIG.arms.length)];
+    try{ localStorage.setItem('mes_arm', arm); }catch(_){}
+  }
+}
 const debug = params.has('debug');
 const pid = 'p' + Math.random().toString(36).slice(2,9);
 const T0 = Date.now(), events = [];
@@ -180,8 +187,7 @@ function header(){
   return `<header class="top"><div class="top-in"><div class="logo"><i></i>Vaatwassers</div><div class="search">Zoek een model of kenmerk</div>
   <div class="top-r"><span class="cart">Winkelmand<b>0</b></span></div></div></header>`;
 }
-const chips = m => `<div class="chips"><span class="chip">${m.cap} couverts</span><span class="chip">${m.db} dB</span><span class="chip">Label ${m.lab}</span></div>`;
-const label = m => hasLabel() ? `<div class="lbl">${m.label}</div>` : '';
+const chips = m => `<div class="chips"><span class="chip">${m.cap} couverts</span><span class="chip">${m.db} dB</span><span class="chip">Label ${m.lab}</span>${hasLabel()?`<span class="chip">${m.label}</span>`:''}</div>`;
 
 /* ===== Schermen ===== */
 function intro(){
@@ -197,7 +203,7 @@ function listing(){
   const cards = MODELS.map(m=>
     `<article class="card"><div class="pic">${dishwasher(m,150)}</div><div class="body">
       <div class="row"><span class="name">Model ${m.id}</span><span class="price">${eur(m.price)}</span></div>
-      ${chips(m)}${label(m)}
+      ${chips(m)}
       <button class="btn ghost" data-a="open" data-m="${m.id}">Bekijk model</button></div></article>`).join('');
   return `${header()}<main><div class="crumb">Huishoudelijke apparaten › Vaatwassers</div><h1>Vaatwassers 60 cm</h1><p class="sub">4 modellen</p>
   <div class="filters"><span class="f on">60 cm</span><span class="f">Tot € 900</span><span class="f">Vrijstaand</span><span class="f">Energielabel</span><span class="f">Geluid</span></div>
@@ -211,7 +217,7 @@ function product(){
   return `${header()}<main><button class="back" data-a="back">‹ Terug naar overzicht</button>
   <div class="pp"><div class="pic">${dishwasher(m,260)}</div>
   <div class="stack"><div class="panel stack"><div class="row"><h1 style="margin:0">Model ${m.id}</h1><span class="price" style="font-size:24px">${eur(m.price)}</span></div>
-  ${chips(m)}${label(m)}${norm}
+  ${chips(m)}${norm}
   <div>${spec}</div>
   <div class="cta"><button class="btn wide" data-a="choose">Kies dit model</button></div></div></div></div></main>`;
 }
