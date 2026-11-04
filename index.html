@@ -124,7 +124,7 @@ table.sp td:last-child{text-align:right;font-weight:600}
 /* ===== Instellingen ===== */
 const CONFIG = {
   studyId: 'mes-ronde2',
-  endpoint: '',            // plak hier de URL van je Google Apps Script web-app
+  endpoint: 'https://script.google.com/macros/s/AKfycbxAjrqSXUSl2JyYk4K6M9M4_HynqyY6xDGHR8rdVB_itWGfKXY-5ZGSDvHosN2V4Yj7/exec',            // plak hier de URL van je Google Apps Script web-app
   arms: ['A','Z']          // arm voor bezoekers zonder ?arm= in de link; C bestaat via ?arm=C
 };
 /* C = controle (geen label), Z = label per vaatwasser, A = label + sociale norm op de productpagina */
@@ -136,10 +136,12 @@ if(!['C','A','Z'].includes(arm)){
      ?arms=ZC kiest willekeurig tussen Z en C, ?arms=AZ tussen A en Z, enz. */
   const pool = (params.get('arms')||'').toUpperCase().split('').filter((c,i,a)=>'CAZ'.includes(c)&&a.indexOf(c)===i);
   const opts = pool.length>1 ? pool : CONFIG.arms;
-  try{ arm = localStorage.getItem('mes_arm'); }catch(_){ arm = null; }
+  /* testmodus (&debug): elke keer opnieuw loten en niets opslaan */
+  const isDebug = params.has('debug');
+  try{ arm = isDebug ? null : localStorage.getItem('mes_arm'); }catch(_){ arm = null; }
   if(!opts.includes(arm)){
     arm = opts[Math.floor(Math.random()*opts.length)];
-    try{ localStorage.setItem('mes_arm', arm); }catch(_){}
+    if(!isDebug){ try{ localStorage.setItem('mes_arm', arm); }catch(_){} }
   }
 }
 const debug = params.has('debug');
