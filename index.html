@@ -157,12 +157,14 @@ function log(type, data){
 
 /* ===== Stimuli (fictief, vaste volgorde) ===== */
 const MODELS = [
-  {id:'A',price:649,cap:13,db:'Stil',lab:'C',prog:5,tone:0,label:'Onderhoud kost maar 5 minuten per week'},
-  {id:'B',price:699,cap:14,db:'Zeer stil',lab:'B',prog:8,tone:1,label:'Veel functies, dus meer onderhoud'},
-  {id:'C',price:749,cap:14,db:'Extreem stil',lab:'B',prog:6,tone:2,label:'Onderhoud kost circa 15 minuten per week'},
-  {id:'D',price:799,cap:15,db:'Extreem stil',lab:'A',prog:7,tone:0,label:'Gemakkelijk te onderhouden'}
+  {id:'A',price:349, cap:12,db:'Stil',       lab:'D',prog:5,tone:0,label:'Onderhoud: 20 min per maand'},
+  {id:'B',price:449, cap:13,db:'Stil',       lab:'D',prog:5,tone:1,label:'Onderhoud: 15 min per maand'},
+  {id:'C',price:549, cap:14,db:'Zeer stil',  lab:'C',prog:6,tone:2,label:'Onderhoud: 5 min per maand'},
+  {id:'D',price:699, cap:14,db:'Zeer stil',  lab:'C',prog:7,tone:0,label:'Onderhoud: 8 min per maand'},
+  {id:'E',price:899, cap:15,db:'Extreem stil',lab:'B',prog:8,tone:1,label:'Onderhoud: 10 min per maand'},
+  {id:'F',price:1099,cap:15,db:'Extreem stil',lab:'B',prog:9,tone:2,label:'Onderhoud: 25 min per maand'}
 ];
-const eur = n => '€ ' + n;
+const eur = n => '€ ' + n.toLocaleString('nl-NL');
 const hasLabel = () => arm==='A' || arm==='Z';
 
 /* ===== Illustraties ===== */
@@ -199,7 +201,7 @@ function intro(){
   return `<header class="top"><div class="top-in"><div class="logo"><i></i>Onderzoek</div></div></header>
   <main><div class="center"><h1>Een nieuwe vaatwasser kiezen</h1>
   <p class="muted">We onderzoeken hoe mensen online apparaten vergelijken. Je bekijkt een fictieve webshop; er wordt niets gekocht. Dit duurt ongeveer 3 minuten.</p>
-  <div class="scn">Je moet een nieuwe vaatwasser kopen (60 cm, budget tot € 900). Bekijk de modellen en kies degene die je zou kopen.</div>
+  <div class="scn">Stel je voor: je moet een nieuwe vrijstaande vaatwasser van 60 cm kopen en je betaalt die zelf uit eigen portemonnee. Bekijk de modellen en kies degene die je zou kopen.</div>
   <p class="note">Je antwoorden zijn anoniem. Je kunt op elk moment stoppen door dit venster te sluiten.</p>
   <button class="btn" data-a="start">Start</button></div></main>`;
 }
@@ -210,8 +212,8 @@ function listing(){
       <div class="row"><span class="name">Model ${m.id}</span><span class="price">${eur(m.price)}</span></div>
       ${chips(m)}
       <button class="btn ghost" data-a="open" data-m="${m.id}">Toelichting specificaties</button></div></article>`).join('');
-  return `${header()}<main><div class="crumb">Huishoudelijke apparaten › Vaatwassers</div><h1>Vaatwassers 60 cm</h1><p class="sub">4 modellen</p>
-  <div class="filters"><span class="f on">60 cm</span><span class="f">Tot € 900</span><span class="f">Vrijstaand</span><span class="f">Energielabel</span><span class="f">Geluid</span></div>
+  return `${header()}<main><div class="crumb">Huishoudelijke apparaten › Vaatwassers</div><h1>Vaatwassers 60 cm</h1><p class="sub">6 modellen, gesorteerd op prijs (laag naar hoog)</p>
+  <div class="filters"><span class="f on">60 cm</span><span class="f on">Vrijstaand</span><span class="f">Prijs</span><span class="f">Energielabel</span><span class="f">Geluid</span></div>
   <div class="grid">${cards}</div></main>`;
 }
 
