@@ -235,7 +235,7 @@ const radios = (name, items) => items.map(([v,t])=>`<label class="opt"><input ty
 function quest(){
   const m=M(S.model);
   return `<header class="top"><div class="top-in"><div class="logo"><i></i>Onderzoek</div></div></header><main><div class="center">
-  <h1>Je koos Model ${m.id}</h1><p class="muted">Nog vier korte vragen. Je kunt terug naar de vaatwasser als je nog iets wilt bekijken.</p>
+  <h1>Je koos Model ${m.id}</h1><p class="muted">Nog vijf korte vragen. Je kunt terug naar de vaatwasser als je nog iets wilt bekijken.</p>
   <form id="qf" novalidate>
   <div class="q"><p>Welke onderdelen speelden een rol bij het maken van je keuze? Vink alles aan wat van toepassing is.</p>
     ${checks('factoren',[['prijs','Prijs'],['capaciteit','Capaciteit'],['geluid','Geluidsniveau'],['energielabel','Energielabel'],['programmas','Aantal programma\'s'],['anders','Anders']])}
@@ -249,9 +249,12 @@ function quest(){
   <div class="q"><p>Weet je welk onderhoud er aan een vaatwasser gedaan moet worden?</p>
     ${radios('weet',[['ja','Ja'],['ongeveer','Ongeveer'],['nee','Nee']])}
     <div class="err hide" id="e4">Kies een antwoord.</div></div>
-  <div class="q"><p>Hoe vaak maak jij de rubbers en het filter van je afwasmachine schoon?</p>
-    ${radios('schoonmaak',[['wekelijks','Elke week'],['maandelijks','Elke maand'],['paar_per_jaar','Een paar keer per jaar'],['jaarlijks_of_minder','Eén keer per jaar of minder'],['nooit','Nooit'],['geen','Ik heb geen afwasmachine']])}
+  <div class="q"><p>Hoe vaak maak jij het filter van je afwasmachine schoon?</p>
+    ${radios('filter',[['wekelijks','Elke week'],['maandelijks','Elke maand'],['paar_per_jaar','Een paar keer per jaar'],['jaarlijks_of_minder','Eén keer per jaar of minder'],['nooit','Nooit'],['geen','Ik heb geen afwasmachine']])}
     <div class="err hide" id="e5">Kies een antwoord.</div></div>
+  <div class="q"><p>Hoe vaak maak jij de rubbers van je afwasmachine schoon?</p>
+    ${radios('rubbers',[['wekelijks','Elke week'],['maandelijks','Elke maand'],['paar_per_jaar','Een paar keer per jaar'],['jaarlijks_of_minder','Eén keer per jaar of minder'],['nooit','Nooit'],['geen','Ik heb geen afwasmachine']])}
+    <div class="err hide" id="e6">Kies een antwoord.</div></div>
   <div class="cta"><button class="btn ghost" type="button" data-a="back">‹ Terug naar de vaatwasser</button><button class="btn" type="submit">Verstuur</button></div></form></div></main>`;
 }
 function done(){
@@ -290,7 +293,7 @@ document.addEventListener('click', e=>{
   else if(a==='choose') go('quest');
 });
 document.addEventListener('change', e=>{
-  const g={factoren:'e1',onderhoud:'e2',redenen:'e3',weet:'e4',schoonmaak:'e5'}[e.target.name];
+  const g={factoren:'e1',onderhoud:'e2',redenen:'e3',weet:'e4',filter:'e5',rubbers:'e6'}[e.target.name];
   if(g) document.getElementById(g).classList.add('hide');
   if(e.target.name==='onderhoud'){ document.getElementById('why').classList.toggle('hide', e.target.value!=='ja'); }
 });
@@ -298,12 +301,12 @@ document.addEventListener('submit', e=>{
   if(e.target.id!=='qf') return; e.preventDefault();
   const f=new FormData(e.target);
   const factoren=f.getAll('factoren'), redenen=f.getAll('redenen');
-  const onderhoud=f.get('onderhoud'), weet=f.get('weet'), schoonmaak=f.get('schoonmaak');
-  const bad = {e1:!factoren.length, e2:!onderhoud, e3:onderhoud==='ja' && !redenen.length, e4:!weet, e5:!schoonmaak};
+  const onderhoud=f.get('onderhoud'), weet=f.get('weet'), filter=f.get('filter'), rubbers=f.get('rubbers');
+  const bad = {e1:!factoren.length, e2:!onderhoud, e3:onderhoud==='ja' && !redenen.length, e4:!weet, e5:!filter, e6:!rubbers};
   let first=null;
   Object.keys(bad).forEach(k=>{ const el=document.getElementById(k); el.classList.toggle('hide', !bad[k]); if(bad[k] && !first) first=el; });
   if(first){ first.scrollIntoView({block:'center'}); return; }
-  log('vragenlijst',{model:S.model, factoren:factoren.join('+'), onderhoud, redenen:onderhoud==='ja'?redenen.join('+'):'', weet, schoonmaak});
+  log('vragenlijst',{model:S.model, factoren:factoren.join('+'), onderhoud, redenen:onderhoud==='ja'?redenen.join('+'):'', weet, filter, rubbers});
   if(S.submitted) return;
   S.submitted=true; go('done');
 });
